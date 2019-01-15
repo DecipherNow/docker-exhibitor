@@ -27,5 +27,5 @@ ZK_MINOR="$(echo ${ZOOKEEPER_VERSION} | awk -F '[\.\-]' '{print $2}')"
 ZK_PATCH="$(echo ${ZOOKEEPER_VERSION} | awk -F '[\.\-]' '{print $3}')"
 
 docker push -t "deciphernow/exhibitor:${EX_MAJOR}-${ZK_MAJOR}" 
-docker push t "deciphernow/exhibitor:${EX_MAJOR}.${EX_MINOR}-${ZK_MAJOR}.${ZK_MINOR}" 
+docker push -t "deciphernow/exhibitor:${EX_MAJOR}.${EX_MINOR}-${ZK_MAJOR}.${ZK_MINOR}" 
 docker push -t "deciphernow/exhibitor:${EX_MAJOR}.${EX_MINOR}.${EX_PATCH}-${ZK_MAJOR}.${ZK_MINOR}.${ZK_PATCH}" 
