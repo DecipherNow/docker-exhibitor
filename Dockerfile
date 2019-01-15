@@ -19,7 +19,9 @@ LABEL MAINTAINER=chris.smith@deciphernow.com \
 
 ARG EXHIBITOR_VERSION
 
-RUN mkdir exhibitor && wget https://raw.githubusercontent.com/soabase/exhibitor/exhibitor-${EXHIBITOR_VERSION}/exhibitor-standalone/pom.xml -O /exhibitor/pom.xml
+RUN mkdir exhibitor \
+    && wget https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml -O /exhibitor/pom.xml \
+    && sed -i "s/1.6.0/${EXHIBITOR_VERSION}/g" /exhibitor/pom.xml
 WORKDIR /exhibitor
 RUN mvn clean package
 
