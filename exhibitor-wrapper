@@ -1,0 +1,39 @@
+#!/bin/bash -e
+
+# Copyright 2019 Decipher Technology Studios
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+MISSING_VAR_MESSAGE="must be set"
+: ${PORT0:?'Missing $PORT0. Should be the exhibitor HTTP interface port'}
+: ${PORT1:?'Missing $PORT1. Should be the zookeeper client port'}
+: ${PORT2:?'Missing $PORT2. Should be the zookeeper connect port'}
+: ${PORT3:?'Missing $PORT2. Should be the zookeeper leader port'}
+
+cat <<EOF > /opt/exhibitor.properties
+zookeeper-install-directory=/opt/zookeeper
+client-port=$PORT1
+connect-port=$PORT2
+election-port=$PORT3
+zoo-cfg-extra=tickTime\=2000&initLimit\=10&syncLimit\=5&quorumListenOnAllIPs\=true
+auto-manage-instances-settling-period-ms=0
+auto-manage-instances=1
+zookeeper-data-directory=/var/lib/zookeeper/snapshots
+zookeeper-log-directory=/var/lib/zookeeper/transactions
+log-index-directory=/var/lib/zookeeper/transactions
+EOF
+
+EXHIBITOR_JAR=$(ls /opt/exhibitor-*.jar)
+java $EXHIBITOR_JVM_OPTS -jar $EXHIBITOR_JAR --defaultconfig=/opt/exhibitor.properties "--port=$PORT0" $@
+
