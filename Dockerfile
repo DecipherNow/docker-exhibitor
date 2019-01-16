@@ -20,8 +20,7 @@ LABEL MAINTAINER=chris.smith@deciphernow.com \
 ARG EXHIBITOR_VERSION
 
 RUN mkdir exhibitor \
-    && wget https://raw.githubusercontent.com/Netflix/exhibitor/master/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml -O /exhibitor/pom.xml \
-    && sed -i "s/1.6.0/${EXHIBITOR_VERSION}/g" /exhibitor/pom.xml
+    && if [ $(curl -s -o /dev/null -w "%{http_code}" https://raw.githubusercontent.com/soabase/exhibitor/exhibitor-${EXHIBITOR_VERSION}/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml) -eq "200" ]; then wget https://raw.githubusercontent.com/soabase/exhibitor/exhibitor-${EXHIBITOR_VERSION}/exhibitor-standalone/src/main/resources/buildscripts/standalone/maven/pom.xml -O /exhibitor/pom.xml; else echo "The version provided is invalid"; exit 1; fi
 WORKDIR /exhibitor
 RUN mvn clean package
 
