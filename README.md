@@ -10,7 +10,7 @@ The below table shows the required environment variables needed to run Exhibitor
 
 | Variable | Default Value | Description |
 | :------ |:-------------| :----------|
-| BUCKET | decipher-development-exhibitor | The S3 bucket that Exhibitor has access to use for shared configs |
+| BUCKET |  |  The S3 bucket that Exhibitor has access to use for shared configs |
 | PREFIX | development | This is the S3 filename that exhibitor will use |
 | REGION | us-east-1 | The AWS region where the bucket is created |
 | PORT0 | 8080 | The port that will be exposed for the Exhibitor UI |
@@ -18,7 +18,8 @@ The below table shows the required environment variables needed to run Exhibitor
 | PORT2 | 2888 | The ZK server Port |
 | PORT3 | 3888 | The ZK election Port |
 | SECRETS_PATH | /opt/exhibitor-secrets | This is the path where OpenShift will put the AWS secrets |
-| SECRETS_FILE | exhibitor | This is the filename where OpenShift will store the secrets. (This is the value of the key for the secrets stored in OpenShift) 
+| SECRETS_FILE | exhibitor | This is the filename where OpenShift will store the secrets. (This is the value of the key for the secrets stored in OpenShift) |
+| IP_ADDR | localhost | This should be set to the IP of the host or POD where zookeeper will be run |
 
 ### Exhibitor Secrets
 

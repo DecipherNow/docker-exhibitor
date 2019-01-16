@@ -13,4 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-/exhibitor-wrapper -c s3 --s3region $REGION --s3credentials $SECRETS_PATH/$SECRETS_FILE --s3config $BUCKET:$PREFIX --hostname $(echo `ifconfig eth0 2>/dev/null|awk '/inet / {print $2}'|sed 's/addr://'`)
+REGION=${REGION:-"us-east-1"}
+SECRETS_PATH=${SECRETS_PATH:-"/opt/exhibitor-secrets"}
+SECRETS_FILE=${SECRETS_FILE:-"exhibitor"}
+IP_ADDR=${IP_ADDR:-"localhost"}
+PREFIX=${PREFIX:-"exhibitor"}
+
+: ${BUCKET:? 'Missing $BUCKET. Should be set to the s3 state bucket'}
+
+/exhibitor-wrapper -c s3 --s3region $REGION --s3credentials $SECRETS_PATH/$SECRETS_FILE --s3config $BUCKET:$PREFIX --hostname $IP_ADDR
