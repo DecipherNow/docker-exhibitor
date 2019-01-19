@@ -34,6 +34,11 @@ zookeeper-log-directory=/var/lib/zookeeper/transactions
 log-index-directory=/var/lib/zookeeper/transactions
 EOF
 
+cat <<EOF > /opt/zookeeper/conf/java.env
+SERVER_JVMFLAGS="$SERVER_JVMFLAGS $ZK_JVM_OPTS"
+EOF
+
 EXHIBITOR_JAR=$(ls /opt/exhibitor-*.jar)
+
 java $EXHIBITOR_JVM_OPTS -jar $EXHIBITOR_JAR --defaultconfig=/opt/exhibitor.properties "--port=$PORT0" $@
 

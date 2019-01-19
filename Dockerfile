@@ -26,33 +26,50 @@ RUN mvn clean package
 
 
 FROM openjdk:8-jdk-slim
+
 ARG ZOOKEEPER_VERSION
+
+ENV HOME /home/zookeeper
+
 # Update java settings so DNS changes take hold.
-RUN apt-get update && apt-get install -y --no-install-recommends curl netcat net-tools
+RUN apt-get update && apt-get install -y --no-install-recommends curl 
 RUN grep '^networkaddress.cache.ttl=' /etc/java-8-openjdk/security/java.security || echo 'networkaddress.cache.ttl=60' >> /etc/java-8-openjdk/security/java.security
 COPY --from=build /exhibitor/target/exhibitor-*.jar /opt/
 
 RUN \
     # Install zookeeper
     curl -Lo /tmp/zookeeper.tgz https://apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
-    && mkdir -p /opt/zookeeper/transactions /opt/zookeeper/snapshots /var/lib/zookeeper /opt/exhibitor \
+    && mkdir -p /opt/zookeeper \
     && tar -xzf /tmp/zookeeper.tgz -C /opt/zookeeper --strip=1 \
     && rm /tmp/zookeeper.tgz \
-    && chmod a+x /opt/exhibitor-*.jar \
-    && chgrp -R 0 /var/lib/zookeeper \
-    && chmod -R g=u /var/lib/zookeeper \
-    && chgrp -R 0 /opt \
-    && chmod -R g=u /opt \ 
     && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /opt/zookeeper/transactions /opt/zookeeper/snapshots /var/lib/zookeeper /opt/exhibitor \
+    && chmod -R a+x /opt/zookeeper \
+    && chown -R 0:0 /opt /var/lib/zookeeper \
+    && chmod -R g=u /opt /var/lib/zookeeper \
+    && chown -R 0:0 /bin \
+    && chmod -R g=u /bin
+
+RUN mkdir -p /home/zookeeper \
+    && chown -R 0:0 /home \
+    && chmod -R g=u /home \
+    && chmod g=u /etc/passwd
 
 # These are readiness/liveliness probe scripts
 COPY zkOk.sh zkMetrics.sh /opt/zookeeper/bin/
 
 COPY entrypoint /entrypoint
 
+ENV EXHIBITOR_JVM_OPTS="-Xmx512m"
+ENV ZK_JVM_OPTS="-XX:+PrintCommandLineFlags -XX:+PrintGC -XX:+PrintGCCause -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution -XX:+PrintAdaptiveSizePolicy -Xmx2g -Xms2g -XX:+AlwaysPreTouch -Xss512k"
+
 # Write out basic config
 COPY exhibitor-wrapper /exhibitor-wrapper
+
+EXPOSE 2181 2888 3888
 
 USER 1002
 
 ENTRYPOINT ["/entrypoint"]
+

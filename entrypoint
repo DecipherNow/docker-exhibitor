@@ -13,6 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if ! whoami &> /dev/null; then
+  if [ -w /etc/passwd ]; then
+    echo "zooekeeper:x:$(id -u):0:zookeeper user:/home/zookeeper:/sbin/nologin" >> /etc/passwd
+  fi
+fi
+
 REGION=${REGION:-"us-east-1"}
 SECRETS_PATH=${SECRETS_PATH:-"/opt/exhibitor-secrets"}
 SECRETS_FILE=${SECRETS_FILE:-"exhibitor"}
