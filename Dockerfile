@@ -25,24 +25,25 @@ WORKDIR /exhibitor
 RUN mvn clean package
 
 
-FROM openjdk:8-jdk-slim
+FROM java:openjdk-8-alpine
 
 ARG ZOOKEEPER_VERSION
 
 ENV HOME /home/zookeeper
 
 # Update java settings so DNS changes take hold.
-RUN apt-get update && apt-get install -y --no-install-recommends curl 
-RUN grep '^networkaddress.cache.ttl=' /etc/java-8-openjdk/security/java.security || echo 'networkaddress.cache.ttl=60' >> /etc/java-8-openjdk/security/java.security
+RUN apk add --no-cache curl bash
+RUN grep '^networkaddress.cache.ttl=' /usr/lib/jvm/java-1.8-openjdk/jre/lib/security/java.security || echo 'networkaddress.cache.ttl=60' >> /usr/lib/jvm/java-1.8-openjdk/jre/lib/security/java.security
 COPY --from=build /exhibitor/target/exhibitor-*.jar /opt/
 
 RUN \
     # Install zookeeper
     curl -Lo /tmp/zookeeper.tgz https://apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
     && mkdir -p /opt/zookeeper \
-    && tar -xzf /tmp/zookeeper.tgz -C /opt/zookeeper --strip=1 \
+    && tar -xzf /tmp/zookeeper.tgz -C /tmp \
+    && mv /tmp/zookeeper-${ZOOKEEPER_VERSION}/* /opt/zookeeper \
     && rm /tmp/zookeeper.tgz \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /tmp/zookeeper-${ZOOKEEPER_VERSION} 
 
 RUN mkdir -p /opt/zookeeper/transactions /opt/zookeeper/snapshots /var/lib/zookeeper /opt/exhibitor \
     && chmod -R a+x /opt/zookeeper \
@@ -67,7 +68,7 @@ ENV ZK_JVM_OPTS="-XX:+PrintCommandLineFlags -XX:+PrintGC -XX:+PrintGCCause -XX:+
 # Write out basic config
 COPY exhibitor-wrapper /exhibitor-wrapper
 
-EXPOSE 2181 2888 3888
+EXPOSE 2181 2888 3888 8080
 
 USER 1002
 

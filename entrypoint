@@ -15,7 +15,7 @@
 
 if ! whoami &> /dev/null; then
   if [ -w /etc/passwd ]; then
-    echo "zooekeeper:x:$(id -u):0:zookeeper user:/home/zookeeper:/sbin/nologin" >> /etc/passwd
+    echo "zooekeeper:x:$(id -u):0:zookeeper user:/home/zookeeper:/bin/sh" >> /etc/passwd
   fi
 fi
 
