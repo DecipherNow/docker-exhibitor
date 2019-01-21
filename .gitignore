@@ -1,0 +1,2 @@
+# any secrets used for local testing should end with .secrets
+*.secrets

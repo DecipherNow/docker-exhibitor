@@ -31,4 +31,4 @@ docker build . \
     --build-arg "EXHIBITOR_VERSION=${EXHIBITOR_VERSION}" \
     -t "deciphernow/exhibitor:${EX_MAJOR}-${ZK_MAJOR}" \
     -t "deciphernow/exhibitor:${EX_MAJOR}.${EX_MINOR}-${ZK_MAJOR}.${ZK_MINOR}" \
-    -t "deciphernow/exhibitor:${EX_MAJOR}.${EX_MINOR}.${EX_PATCH}-${ZK_MAJOR}.${ZK_MINOR}.${ZK_PATCH}" 
+    -t "deciphernow/exhibitor:${EX_MAJOR}.${EX_MINOR}.${EX_PATCH}-${ZK_MAJOR}.${ZK_MINOR}.${ZK_PATCH}"  
