@@ -19,3 +19,5 @@ workflows:
           filters:
             tags:
               ignore: /.*/
+            branches:
+              only: master
