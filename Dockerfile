@@ -25,15 +25,18 @@ WORKDIR /exhibitor
 RUN mvn clean package
 
 
-FROM java:openjdk-8-alpine
+FROM alpine:3.8
 
 ARG ZOOKEEPER_VERSION
 
 ENV HOME /home/zookeeper
 
 # Update java settings so DNS changes take hold.
-RUN apk add --no-cache curl bash
+RUN apk add --no-cache openjdk8 curl bash
 RUN grep '^networkaddress.cache.ttl=' /usr/lib/jvm/java-1.8-openjdk/jre/lib/security/java.security || echo 'networkaddress.cache.ttl=60' >> /usr/lib/jvm/java-1.8-openjdk/jre/lib/security/java.security
+
+ENV PATH /usr/lib/jvm/java-1.8-openjdk/bin/:$PATH
+
 COPY --from=build /exhibitor/target/exhibitor-*.jar /opt/
 
 RUN \
@@ -72,5 +75,5 @@ EXPOSE 2181 2888 3888 8080
 
 USER 1002
 
-ENTRYPOINT ["/entrypoint"]
+CMD ["/entrypoint"]
 
