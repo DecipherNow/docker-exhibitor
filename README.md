@@ -4,6 +4,13 @@
 
 OpenShift has specific requirements for Docker images that makes them a little more difficult to run in the cluster.  This Dockerfile resolves those requirements and is capable of running in OpenShift
 
+## Running
+
+Follow the [Exhibitor configuration guide](https://github.com/soabase/exhibitor/wiki/Running-Exhibitor) to build the proper configuration to run Exhibitor.  Here is an example using S3
+
+```bash
+docker run --rm -p 2181:2181 -p 2888:2888 -p 3888:3888 -p 8080:8080 deciphernow/exhibitor:1.6.0-3.4.13 /exhibitor-wrapper -c s3 --s3region us-east-1 --s3credentials /path/to/credentials/on/disk --s3config my-s3-exhibitor-bucket/my-cool-exhibitor --hostname server-ip-address
+```
 
 ## Building
 
