@@ -63,8 +63,6 @@ RUN mkdir -p /home/zookeeper \
 # These are readiness/liveliness probe scripts
 COPY zkOk.sh zkMetrics.sh /opt/zookeeper/bin/
 
-COPY entrypoint /entrypoint
-
 ENV EXHIBITOR_JVM_OPTS="-Xmx512m"
 ENV ZK_JVM_OPTS="-XX:+PrintCommandLineFlags -XX:+PrintGC -XX:+PrintGCCause -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution -XX:+PrintAdaptiveSizePolicy -Xmx2g -Xms2g -XX:+AlwaysPreTouch -Xss512k"
 
@@ -75,5 +73,5 @@ EXPOSE 2181 2888 3888 8080
 
 USER 1002
 
-CMD ["/entrypoint"]
+CMD ["/exhibitor-wrapper"]
 
