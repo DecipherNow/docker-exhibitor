@@ -14,6 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if ! whoami &> /dev/null; then
+  if [ -w /etc/passwd ]; then
+    echo "zooekeeper:x:$(id -u):0:zookeeper user:/home/zookeeper:/bin/sh" >> /etc/passwd
+  fi
+fi
 
 MISSING_VAR_MESSAGE="must be set"
 : ${PORT0:?'Missing $PORT0. Should be the exhibitor HTTP interface port'}
